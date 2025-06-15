@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useAuth } from "./AuthContext";
+import LoginPage from "./LoginPage";
+import Dashboard from "./Dashboard";
 
 function App() {
-  const [price, setPrice] = useState("");
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:4000");
-
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setPrice(data.price);
-    };
-
-    return () => ws.close();
-  }, []);
+  const { user } = useAuth();
 
   return (
-    <div>
-      <h1>Real-Time Fintech Dashboard</h1>
-      <h2>FAKE: ${price}</h2>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={user ? <Dashboard /> : <LoginPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
